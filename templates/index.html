@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Monitoring</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: #f3f4f6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 60%;
+            margin: 50px auto;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+        }
+        form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        label {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        input {
+            padding: 10px;
+            font-size: 1em;
+            width: 250px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .pollutant {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.1em;
+        }
+        .alert {
+            color: red;
+            font-weight: bold;
+            text-align: center;
+        }
+        .good {
+            color: green;
+            font-weight: bold;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            margin-top: 20px;
+            color: #777;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Air Quality Data</h1>
+
+        <form method="POST" action="/">
+            <label for="city">Enter City:</label>
+            <input type="text" id="city" name="city" placeholder="E.g., New York, Tokyo" required>
+            <button type="submit">Check Air Quality</button>
+        </form>
+
+        {% if air_quality_data %}
+        <h2>City: {{ air_quality_data.city }}</h2>
+        <p>AQI: <strong>{{ air_quality_data.aqi }}</strong></p>
+        <div>
+            <h3>Pollutants:</h3>
+            <div class="pollutant"><span>Humidity:</span> <span>{{ air_quality_data.pollutants.Humidity }} %</span></div>
+            <div class="pollutant"><span>Pressure:</span> <span>{{ air_quality_data.pollutants.Pressure }} hPa</span></div>
+            <div class="pollutant"><span>PM2.5:</span> <span>{{ air_quality_data.pollutants['PM2.5'] }} µg/m³</span></div>
+            <div class="pollutant"><span>Temperature:</span> <span>{{ air_quality_data.pollutants.Temperature }} °C</span></div>
+            <div class="pollutant"><span>Wind Speed:</span> <span>{{ air_quality_data.pollutants['Wind Speed'] }} m/s</span></div>
+            <div class="pollutant"><span>Wind Gust:</span> <span>{{ air_quality_data.pollutants['Wind Gust'] }} m/s</span></div>
+        </div>
+
+        {% if air_quality_data.aqi > 100 %}
+        <p class="alert">Air quality is unhealthy. Take necessary precautions!</p>
+        {% else %}
+        <p class="good">Air quality is satisfactory.</p>
+        {% endif %}
+        {% else %}
+        <p class="alert">No data available. Please check the city name.</p>
+        {% endif %}
+    </div>
+
+    <footer>
+        Powered by <a href="https://waqi.info/">World Air Quality Index</a>
+    </footer>
+</body>
+</html>
