@@ -4,63 +4,94 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Air Quality Monitoring</title>
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
-            background: #f3f4f6;
+            font-family: 'Roboto', sans-serif;
+            background-color: #e9ecef;
+            color: #333;
         }
         .container {
             margin-top: 50px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #ffffff;
+        }
+        h1 {
+            color: #28a745;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-align: center;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .alert {
+            margin-top: 20px;
+            text-align: center;
         }
         footer {
             text-align: center;
-            padding: 10px;
             margin-top: 20px;
             color: #777;
             font-size: 0.9em;
+        }
+        .card {
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .pollutant-icon {
+            font-size: 1.5em;
+            color: #28a745;
+        }
+        .pollutant-value {
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center text-success mb-4">Air Quality Data</h1>
-
-        <form method="POST" action="/" class="mb-4">
-            <div class="form-row justify-content-center">
-                <div class="col-auto">
-                    <label for="city">Enter City:</label>
-                    <input type="text" id="city" name="city" class="form-control" placeholder="E.g., New York, Tokyo" required>
-                </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-success">Check Air Quality</button>
-                </div>
+        <h1>Air Quality Monitoring</h1>
+        <form method="POST" action="/">
+            <div class="form-group">
+                <label for="city">Enter City:</label>
+                <input type="text" class="form-control" id="city" name="city" placeholder="E.g., New York, Tokyo" required>
             </div>
+            <button type="submit" class="btn btn-primary btn-block">Check Air Quality</button>
         </form>
 
         {% if air_quality_data %}
-        <h2>City: {{ air_quality_data.city }}</h2>
-        <p>AQI: <strong>{{ air_quality_data.aqi }}</strong></p>
-        <div>
-            <h3>Pollutants:</h3>
-            <ul class="list-group">
-                <li class="list-group-item">Humidity: {{ air_quality_data.pollutants.Humidity }} %</li>
-                <li class="list-group-item">Pressure: {{ air_quality_data.pollutants.Pressure }} hPa</li>
-                <li class="list-group-item">PM2.5: {{ air_quality_data.pollutants['PM2.5'] }} µg/m³</li>
-                <li class="list-group-item">Temperature: {{ air_quality_data.pollutants.Temperature }} °C</li>
-                <li class="list-group-item">Wind Speed: {{ air_quality_data.pollutants['Wind Speed'] }} m/s</li>
-            </ul>
+        <div class="card">
+            <div class="card-body">
+                <h2 class="card-title">City: {{ air_quality_data.city }}</h2>
+                <h4>AQI: <span class="text-primary">{{ air_quality_data.aqi }}</span></h4>
+                <h3>Pollutants:</h3>
+                <div class="pollutant-icon"><i class="fas fa-tint"></i> Humidity: <span class="pollutant-value">{{ air_quality_data.pollutants.Humidity }} %</span></div>
+                <div class="pollutant-icon"><i class="fas fa-cloud"></i> Pressure: <span class="pollutant-value">{{ air_quality_data.pollutants.Pressure }} hPa</span></div>
+                <div class="pollutant-icon"><i class="fas fa-smog"></i> PM2.5: <span class="pollutant-value">{{ air_quality_data.pollutants['PM2.5'] }} µg/m³</span></div>
+                <div class="pollutant-icon"><i class="fas fa-thermometer-half"></i> Temperature: <span class="pollutant-value">{{ air_quality_data.pollutants.Temperature }} °C</span></div>
+                <div class="pollutant-icon"><i class="fas fa-wind"></i> Wind Speed: <span class="pollutant-value">{{ air_quality_data.pollutants['Wind Speed'] }} m/s</span></div>
+            </div>
         </div>
 
         {% if air_quality_data.aqi > 100 %}
-        <p class="alert alert-danger">Air quality is unhealthy. Take necessary precautions!</p>
+        <div class="alert alert-danger">Air quality is unhealthy. Take necessary precautions!</div>
         {% else %}
-        <p class="alert alert-success">Air quality is satisfactory.</p>
+        <div class="alert alert-success">Air quality is satisfactory.</div>
         {% endif %}
         
-        <!-- AQI Table -->
         <h3>AQI Levels:</h3>
         <table class="table table-bordered">
             <thead>
@@ -71,51 +102,25 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>0-50</td>
-                    <td>Good</td>
-                    <td>Air quality is considered satisfactory.</td>
-                </tr>
-                <tr>
-                    <td>51-100</td>
-                    <td>Moderate</td>
-                    <td>Acceptable air quality; some pollutants may pose a health risk to sensitive individuals.</td>
-                </tr>
-                <tr>
-                    <td>101-150</td>
-                    <td>Unhealthy for Sensitive Groups</td>
-                    <td>Members of sensitive groups may experience health effects.</td>
-                </tr>
-                <tr>
-                    <td>151-200</td>
-                    <td>Unhealthy</td>
-                    <td>Everyone may experience health effects.</td>
-                </tr>
-                <tr>
-                    <td>201-300</td>
-                    <td>Very Unhealthy</td>
-                    <td>Health alert: everyone may experience serious health effects.</td>
-                </tr>
-                <tr>
-                    <td>301-500</td>
-                    <td>Hazardous</td>
-                    <td>Emergency conditions: the entire population is likely to be affected.</td>
-                </tr>
+                <tr><td>0-50</td><td>Good</td><td>Air quality is considered satisfactory.</td></tr>
+                <tr><td>51-100</td><td>Moderate</td><td>Acceptable air quality; some pollutants may pose a health risk to sensitive individuals.</td></tr>
+                <tr><td>101-150</td><td>Unhealthy for Sensitive Groups</td><td>Members of sensitive groups may experience health effects.</td></tr>
+                <tr><td>151-200</td><td>Unhealthy</td><td>Everyone may experience health effects.</td></tr>
+                <tr><td>201-300</td><td>Very Unhealthy</td><td>Health alert: everyone may experience serious health effects.</td></tr>
+                <tr><td>301-500</td><td>Hazardous</td><td>Emergency conditions: the entire population is likely to be affected.</td></tr>
             </tbody>
         </table>
 
         {% else %}
-        <p class="alert alert-danger">No data available. Please check the city name.</p>
+        <div class="alert alert-warning">No data available. Please check the city name.</div>
         {% endif %}
     </div>
 
     <footer>
         Powered by <a href="https://waqi.info/">World Air Quality Index</a>
     </footer>
-    
-    <!-- jQuery and Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
