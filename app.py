@@ -15,7 +15,7 @@ API_KEY = '776b909054d194e0098441aa4eec7993f1d091af'
 def get_air_quality_data(city):
     url = f"https://api.waqi.info/feed/{city}/?token={API_KEY}"
     try:
-        response = requests.get(url, verify=False)  # Ignore SSL certificate warnings
+        response = requests.get(url, verify=False)  # Disable SSL verification
         data = response.json()
 
         if data['status'] == 'ok':
@@ -51,5 +51,3 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-
