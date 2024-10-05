@@ -9,7 +9,7 @@ patch_sklearn()
 
 app = Flask(__name__)
 
-
+# Your actual API key
 API_KEY = '776b909054d194e0098441aa4eec7993f1d091af'
 
 def get_air_quality_data(city):
